@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.title }} - FlashCart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .navbar {
+            background-color: var(--dark-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            color: white !important;
+        }
+        
+        .product-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .product-image-container {
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: #f8f9fa;
+        }
+        
+        .product-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .product-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .product-description {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .product-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .stars {
+            color: #f1c40f;
+            margin-right: 10px;
+        }
+        
+        .discount-badge {
+            background-color: #e74c3c;
+            color: white;
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        .category-badge {
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.9rem;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        .stock-info {
+            display: flex;
+            align-items: center;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+        
+        .stock-badge {
+            font-size: 0.9rem;
+            margin-left: 10px;
+            padding: 3px 10px;
+            border-radius: 4px;
+        }
+        
+        .in-stock {
+            background-color: #e3f7e9;
+            color: #27ae60;
+        }
+        
+        .low-stock {
+            background-color: #fdf4e9;
+            color: #f39c12;
+        }
+        
+        .out-stock {
+            background-color: #fdeeee;
+            color: #e74c3c;
+        }
+        
+        .btn-add-cart {
+            background-color: var(--secondary-color);
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-add-cart:hover {
+            background-color: #27ae60;
+            transform: scale(1.05);
+        }
+        
+        .similar-products {
+            margin-top: 3rem;
+        }
+        
+        .similar-products h3 {
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .similar-products h3:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+        
+        .thumbnail-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .thumbnail {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .thumbnail:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .product-features {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .feature-icon {
+            color: var(--primary-color);
+            margin-right: 10px;
+            margin-top: 2px;
+        }
+        
+        .brand-badge {
+            background-color: #34495e;
+            color: white;
+            font-size: 0.9rem;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        .cart-icon {
+            position: relative;
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        .search-form {
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .search-input {
+            border-radius: 20px 0 0 20px;
+            border: none;
+            padding-left: 20px;
+        }
+        
+        .search-button {
+            border-radius: 0 20px 20px 0;
+            background-color: var(--secondary-color);
+            border: none;
+        }
+        
+        .search-button:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">FlashCart</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/category/{{ product.category }}">{{ product.category|capitalize }}</a>
+                    </li>
+                </ul>
+                
+                <form class="d-flex search-form mx-auto" action="/search" method="get">
+                    <input class="form-control search-input" type="search" name="q" placeholder="Cari produk...">
+                    <button class="btn search-button" type="submit">
+                        <i class="fas fa-search text-white"></i>
+                    </button>
+                </form>
+                
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link cart-icon" href="/cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-badge" id="cartCount">{{ session.cart|default([])|length }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Product Detail Section -->
+    <section class="container">
+        <nav style="--bs-breadcrumb-divider: '›';" aria-label="breadcrumb" class="mt-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Beranda</a></li>
+                <li class="breadcrumb-item"><a href="/category/{{ product.category }}" class="text-decoration-none">{{ product.category|capitalize }}</a></li>
+                <li class="breadcrumb-item active">{{ product.title }}</li>
+            </ol>
+        </nav>
+        
+        <div class="product-container">
+            <div class="row g-0">
+                <div class="col-md-6">
+                    <div class="product-image-container" id="mainImageContainer">
+                        <img src="{{ product.thumbnail }}" class="product-image" id="mainImage" alt="{{ product.title }}">
+                    </div>
+                    <div class="thumbnail-grid px-3 pb-3">
+                        {% for image in product.images %}
+                            <img src="{{ image }}" class="thumbnail" onclick="setMainImage('{{ image }}')" alt="{{ product.title }}">
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-4">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="category-badge">{{ product.category|capitalize }}</div>
+                            <div class="brand-badge">{{ product.brand }}</div>
+                            {% if product.discountPercentage > 0 %}
+                                <div class="discount-badge">-{{ product.discountPercentage|round|int }}%</div>
+                            {% endif %}
+                        </div>
+                        
+                        <h1 class="product-title">{{ product.title }}</h1>
+                        
+                        <div class="product-rating">
+                            <div class="stars">
+                                {% set rating = product.rating|round|int %}
+                                {% for i in range(1, 5) %}
+                                    {% if i <= rating %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span>{{ product.rating }} / 5</span>
+                        </div>
+                        
+                        <div class="product-price">${{ product.price }}</div>
+                        
+                        <div class="stock-info">
+                            <span>Ketersediaan:</span>
+                            {% if product.stock > 10 %}
+                                <span class="stock-badge in-stock">Tersedia ({{ product.stock }})</span>
+                            {% elif product.stock > 0 %}
+                                <span class="stock-badge low-stock">Stok Terbatas ({{ product.stock }})</span>
+                            {% else %}
+                                <span class="stock-badge out-stock">Habis</span>
+                            {% endif %}
+                        </div>
+                        
+                        <p class="product-description">{{ product.description }}</p>
+                        
+                        <div class="product-features">
+                            <h5 class="mb-3">Fitur Produk:</h5>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle feature-icon"></i>
+                                <div>Kualitas premium</div>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle feature-icon"></i>
+                                <div>Garansi resmi</div>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle feature-icon"></i>
+                                <div>Pengiriman cepat</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="btn btn-add-cart">
+                                <i class="fas fa-shopping-cart me-2"></i>Tambahkan ke Keranjang
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="mb-3">FlashCart</h5>
+                    <p>Toko online terpercaya dengan berbagai pilihan produk berkualitas. Temukan penawaran terbaik untuk kebutuhan Anda.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5 class="mb-3">Tautan Cepat</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-white text-decoration-none">Beranda</a></li>
+                        <li><a href="/cart" class="text-white text-decoration-none">Keranjang</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5 class="mb-3">Kontak</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope me-2"></i> azelpandy2@gmail.com</li>
+                        <li><i class="fas fa-phone me-2"></i> (021) 87770144273</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="mt-4 mb-4 bg-light">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 FlashCart. Hak Cipta Dilindungi.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Function to set main image
+        function setMainImage(imageUrl) {
+            document.getElementById('mainImage').src = imageUrl;
+        }
+    </script>
+</body>
+</html>

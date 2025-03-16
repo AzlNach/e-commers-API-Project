@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.title }} - FlashCart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3bc14a;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --accent-color: #f72585;
+        }
+        
+        body {
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .navbar {
+            background-color: var(--dark-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 12px 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+            font-size: 1.5rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .navbar-brand span {
+            color: var(--secondary-color);
+        }
+        
+        .product-container {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .product-container:hover {
+            transform: translateY(-5px);
+        }
+        
+        .product-image-container {
+            height: 450px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            position: relative;
+        }
+        
+        .product-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+        }
+        
+        .product-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .product-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+            line-height: 1.2;
+        }
+        
+        .product-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .original-price {
+            font-size: 1.2rem;
+            text-decoration: line-through;
+            color: #aaa;
+            font-weight: normal;
+        }
+        
+        .savings {
+            font-size: 1rem;
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        .product-description {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .product-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            background-color: #f8f9fa;
+            padding: 8px 15px;
+            border-radius: 50px;
+            width: fit-content;
+        }
+        
+        .stars {
+            color: #ffc107;
+            margin-right: 10px;
+            letter-spacing: 2px;
+        }
+        
+        .rating-number {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .discount-badge {
+            background-color: var(--accent-color);
+            color: white;
+            font-weight: bold;
+            padding: 6px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 10;
+            box-shadow: 0 4px 8px rgba(247, 37, 133, 0.3);
+        }
+        
+        .category-badge {
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.85rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.2);
+        }
+        
+        .brand-badge {
+            background-color: #334155;
+            color: white;
+            font-size: 0.85rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 0.8rem;
+            margin-left: 8px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 8px rgba(51, 65, 85, 0.2);
+        }
+        
+        .stock-info {
+            display: flex;
+            align-items: center;
+            color: #555;
+            margin-bottom: 1.2rem;
+            margin-top: 1.2rem;
+        }
+        
+        .stock-label {
+            font-weight: 500;
+            margin-right: 8px;
+        }
+        
+        .stock-badge {
+            font-size: 0.9rem;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        
+        .in-stock {
+            background-color: #e3f7e9;
+            color: #27ae60;
+        }
+        
+        .low-stock {
+            background-color: #fff3cd;
+            color: #fd7e14;
+        }
+        
+        .out-stock {
+            background-color: #fdeeee;
+            color: #e74c3c;
+        }
+        
+        .btn-add-cart {
+            background-color: var(--secondary-color);
+            border: none;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            color: white;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(59, 193, 74, 0.2);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-add-cart:hover {
+            background-color: #32a83e;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(59, 193, 74, 0.3);
+            color: white;
+        }
+        
+        .btn-add-cart:focus {
+            box-shadow: 0 0 0 3px rgba(59, 193, 74, 0.3);
+        }
+        
+        .btn-add-cart:active {
+            transform: translateY(0);
+        }
+        
+        .btn-favorite {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #212529;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            margin-left: 12px;
+        }
+        
+        .btn-favorite:hover {
+            background-color: #fff1f6;
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: scale(1.1);
+        }
+        
+        .thumbnail-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+            padding: 0 15px 20px;
+        }
+        
+        .thumbnail {
+            width: 100%;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .thumbnail:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary-color);
+        }
+        
+        .thumbnail.active {
+            border-color: var(--primary-color);
+        }
+        
+        .breadcrumb {
+            margin-top: 20px;
+            padding: 12px 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .breadcrumb-item a {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 0 2rem;
+            margin-top: 3rem;
+        }
+        
+        .footer h5 {
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer h5:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--secondary-color);
+        }
+        
+        .footer a {
+            color: rgba(255, 255, 255, 0.8);
+            transition: color 0.3s ease;
+        }
+        
+        .footer a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .footer-contact li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .footer-contact i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .product-features {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .feature-title {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .feature-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .feature-icon {
+            color: var(--secondary-color);
+            margin-right: 12px;
+            margin-top: 2px;
+            font-size: 1.1rem;
+        }
+        
+        .feature-text {
+            font-weight: 500;
+        }
+        
+        .cart-icon {
+            position: relative;
+            font-size: 1.2rem;
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        .search-form {
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .search-input {
+            border-radius: 50px 0 0 50px;
+            border: none;
+            padding-left: 20px;
+            height: 45px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .search-button {
+            border-radius: 0 50px 50px 0;
+            background-color: var(--secondary-color);
+            border: none;
+            height: 45px;
+            width: 50px;
+        }
+        
+        .search-button:hover {
+            background-color: #32a83e;
+        }
+        
+        .delivery-info {
+            margin-top: 1.5rem;
+            padding: 15px;
+            border: 1px dashed #ddd;
+            border-radius: 10px;
+            background-color: #fafafa;
+        }
+        
+        .delivery-title {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .delivery-title i {
+            color: var(--primary-color);
+        }
+        
+        .spec-table {
+            margin-top: 1.5rem;
+        }
+        
+        .spec-table th {
+            width: 30%;
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+        
+        @media (max-width: 767.98px) {
+            .product-image-container {
+                height: 300px;
+            }
+            
+            .product-title {
+                font-size: 1.8rem;
+            }
+            
+            .thumbnail-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            padding: 8px 16px;
+            transition: color 0.3s ease;
+        }
+        
+        .navbar-nav .nav-link:hover {
+            color: var(--secondary-color);
+        }
+        
+        .nav-item.active .nav-link {
+            color: var(--secondary-color);
+        }
+        
+        .related-products {
+            margin-top: 3rem;
+        }
+        
+        .section-title {
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 12px;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="fas fa-bolt me-2"></i>Flash<span>Cart</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/"><i class="fas fa-home me-1"></i> Beranda</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="categoryDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-th-large me-1"></i> Kategori
+                        </a>
+                        <ul class="dropdown-menu" id="categoryMenu">
+                            <li><a class="dropdown-item" href="/category/{{ product.category }}">{{ product.category|capitalize }}</a></li>
+                            <!-- Kategori lainnya akan dimuat melalui JavaScript -->
+                        </ul>
+                    </li>
+                </ul>
+                
+                <form class="d-flex search-form mx-auto" action="/search" method="get">
+                    <input class="form-control search-input" type="search" name="q" placeholder="Cari produk...">
+                    <button class="btn search-button" type="submit">
+                        <i class="fas fa-search text-white"></i>
+                    </button>
+                </form>
+                
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link cart-icon" href="/cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-badge" id="cartCount">{{ session.cart|default([])|length }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Product Detail Section -->
+    <section class="container">
+        <nav style="--bs-breadcrumb-divider: '›';" aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Beranda</a></li>
+                <li class="breadcrumb-item"><a href="/category/{{ product.category }}" class="text-decoration-none">{{ product.category|capitalize }}</a></li>
+                <li class="breadcrumb-item active">{{ product.title }}</li>
+            </ol>
+        </nav>
+        
+        <div class="product-container">
+            <div class="row g-0">
+                <div class="col-md-6">
+                    <div class="product-image-container" id="mainImageContainer">
+                        <img src="{{ product.thumbnail }}" class="product-image" id="mainImage" alt="{{ product.title }}">
+                        {% if product.discountPercentage > 0 %}
+                            <div class="discount-badge">-{{ product.discountPercentage|round|int }}% OFF</div>
+                        {% endif %}
+                    </div>
+                    <div class="thumbnail-grid">
+                        <img src="{{ product.thumbnail }}" class="thumbnail active" onclick="setMainImage('{{ product.thumbnail }}', this)" alt="{{ product.title }}">
+                        {% for image in product.images %}
+                            <img src="{{ image }}" class="thumbnail" onclick="setMainImage('{{ image }}', this)" alt="{{ product.title }}">
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-4 p-lg-5">
+                        <div class="d-flex align-items-center flex-wrap">
+                            <div class="category-badge">{{ product.category|capitalize }}</div>
+                            <div class="brand-badge">{{ product.brand }}</div>
+                        </div>
+                        
+                        <h1 class="product-title">{{ product.title }}</h1>
+                        
+                        <div class="product-rating">
+                            <div class="stars">
+                                {% set rating = product.rating|round(1) %}
+                                {% set fullStars = rating|int %}
+                                {% set halfStar = (rating - fullStars) >= 0.5 %}
+                                
+                                {% for i in range(1, 6) %}
+                                    {% if i <= fullStars %}
+                                        <i class="fas fa-star"></i>
+                                    {% elif halfStar and i == fullStars + 1 %}
+                                        <i class="fas fa-star-half-alt"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="rating-number">{{ product.rating }} / 5 </span>
+                        </div>
+                        
+                        <div class="product-price">
+                            ${{ product.price }}
+                            {% if product.discountPercentage > 0 %}
+                                {% set originalPrice = (product.price / (1 - (product.discountPercentage / 100)))|round(2) %}
+                                <span class="original-price">${{ originalPrice }}</span>
+                                {% set savings = originalPrice - product.price %}
+                                <span class="savings">Hemat ${{ savings|round(2) }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <p class="product-description">{{ product.description }}</p>
+                        
+                        <table class="table table-borderless spec-table">
+                            <tbody>
+                                <tr>
+                                    <th>Brand</th>
+                                    <td>{{ product.brand }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Kategori</th>
+                                    <td>{{ product.category|capitalize }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Rating</th>
+                                    <td>{{ product.rating }}/5</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div class="stock-info">
+                            <span class="stock-label">Ketersediaan:</span>
+                            {% if product.stock > 10 %}
+                                <span class="stock-badge in-stock"><i class="fas fa-check-circle me-1"></i> Tersedia ({{ product.stock }})</span>
+                            {% elif product.stock > 0 %}
+                                <span class="stock-badge low-stock"><i class="fas fa-exclamation-circle me-1"></i> Stok Terbatas ({{ product.stock }})</span>
+                            {% else %}
+                                <span class="stock-badge out-stock"><i class="fas fa-times-circle me-1"></i> Habis</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="delivery-info">
+                            <div class="delivery-title">
+                                <i class="fas fa-truck"></i> Informasi Pengiriman
+                            </div>
+                            <p class="mb-0">Pengiriman gratis untuk pembelian di atas $50. Estimasi waktu pengiriman 2-5 hari kerja.</p>
+                        </div>
+                        
+                        <div class="product-features mt-4">
+                            <h5 class="feature-title">Fitur Produk</h5>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle feature-icon"></i>
+                                <div class="feature-text">Kualitas premium dari {{ product.brand }}</div>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle feature-icon"></i>
+                                <div class="feature-text">Garansi resmi 1 tahun</div>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle feature-icon"></i>
+                                <div class="feature-text">Pengiriman cepat ke seluruh Indonesia</div>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle feature-icon"></i>
+                                <div class="feature-text">Gratis pengembalian dalam 30 hari</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 d-flex align-items-center">
+                            <a href="{{ url_for('add_to_cart', product_id=product.id) }}" class="btn btn-add-cart">
+                                <i class="fas fa-shopping-cart"></i> Tambahkan ke Keranjang
+                            </a>
+                            <button type="button" class="btn btn-favorite">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                    <h5>FlashCart</h5>
+                    <p>Toko online terpercaya dengan berbagai pilihan produk berkualitas. Temukan penawaran terbaik untuk kebutuhan Anda.</p>
+                    <div class="mt-3">
+                        <a href="#" class="text-decoration-none me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-decoration-none me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-decoration-none me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-decoration-none"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
+                    <h5>Tautan Cepat</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/" class="text-decoration-none"><i class="fas fa-chevron-right me-2"></i>Beranda</a></li>
+                        <li class="mb-2"><a href="/cart" class="text-decoration-none"><i class="fas fa-chevron-right me-2"></i>Keranjang</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none"><i class="fas fa-chevron-right me-2"></i>Tentang Kami</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none"><i class="fas fa-chevron-right me-2"></i>Kontak</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5>Kategori</h5>
+                    <ul class="list-unstyled" id="footerCategories">
+                        <li class="mb-2"><a href="/category/{{ product.category }}" class="text-decoration-none"><i class="fas fa-chevron-right me-2"></i>{{ product.category|capitalize }}</a></li>
+                        <!-- Kategori lainnya akan dimuat melalui JavaScript -->
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5>Kontak</h5>
+                    <ul class="list-unstyled footer-contact">
+                        <li><i class="fas fa-map-marker-alt"></i> Jl. Bojosantos</li>
+                        <li><i class="fas fa-envelope"></i> zelpandy2@gmail.com</li>
+                        <li><i class="fas fa-phone"></i> (021) 87770144273</li>
+                        <li><i class="fas fa-clock"></i> Senin - Jumat: 9:00 - 17:00</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="mt-4 mb-4 bg-light opacity-25">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 FlashCart. Hak Cipta Dilindungi. Dibuat dengan <i class="fas fa-heart text-danger"></i> di Indonesia</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Function to set main image
+function setMainImage(imageUrl, element) {
+    document.getElementById('mainImage').src = imageUrl;
+    
+    // Remove active class from all thumbnails
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    thumbnails.forEach(thumb => thumb.classList.remove('active'));
+    
+    // Add active class to the clicked thumbnail
+    if (element) {
+        element.classList.add('active');
+    }
+}
+
+// Load categories for dropdown menu and footer
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/api/categories')
+        .then(response => response.json())
+        .then(categories => {
+            const categoryMenu = document.getElementById('categoryMenu');
+            const footerCategories = document.getElementById('footerCategories');
+            
+            // Get current category
+            const currentCategory = '{{ product.category }}';
+            
+            // Add 5 random categories to dropdown (excluding current category if it exists)
+            const randomCategories = categories
+                .filter(cat => cat !== currentCategory)
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 5);
+            
+            randomCategories.forEach(category => {
+                // Format category name (capitalize first letter)
+                const formattedCategory = category.charAt(0).toUpperCase() + category.slice(1);
+                
+                // Add to dropdown menu
+                const dropdownItem = document.createElement('li');
+                dropdownItem.innerHTML = `<a class="dropdown-item" href="/category/${category}">${formattedCategory}</a>`;
+                categoryMenu.appendChild(dropdownItem);
+                
+                // Add to footer categories
+                const footerItem = document.createElement('li');
+                footerItem.className = 'mb-2';
+                footerItem.innerHTML = `<a href="/category/${category}" class="text-decoration-none"><i class="fas fa-chevron-right me-2"></i>${formattedCategory}</a>`;
+                footerCategories.appendChild(footerItem);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching categories:', error);
+        });
+});
+
+// Add to cart functionality with animation
+document.addEventListener('DOMContentLoaded', function() {
+    const addToCartBtn = document.querySelector('.btn-add-cart');
+    
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const productId = this.getAttribute('href').split('/').pop();
+            const cartBadge = document.getElementById('cartCount');
+            
+            // Add animation to button
+            this.classList.add('adding');
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menambahkan...';
+            
+            // Make AJAX request to add item to cart
+            fetch(`/add-to-cart/${productId}`)
+                .then(response => response.text())
+                .then(html => {
+                    setTimeout(() => {
+                        // Update button state
+                        addToCartBtn.classList.remove('adding');
+                        addToCartBtn.innerHTML = '<i class="fas fa-check"></i> Ditambahkan ke Keranjang';
+                        
+                        // Update cart count
+                        let currentCount = parseInt(cartBadge.textContent || '0');
+                        cartBadge.textContent = currentCount + 1;
+                        
+                        // Create floating animation from product to cart
+                        const productImg = document.getElementById('mainImage');
+                        if (productImg) {
+                            const imgClone = productImg.cloneNode(true);
+                            const imgRect = productImg.getBoundingClientRect();
+                            const cartIconRect = document.querySelector('.cart-icon').getBoundingClientRect();
+                            
+                            imgClone.style.position = 'fixed';
+                            imgClone.style.top = imgRect.top + 'px';
+                            imgClone.style.left = imgRect.left + 'px';
+                            imgClone.style.width = imgRect.width + 'px';
+                            imgClone.style.height = imgRect.height + 'px';
+                            imgClone.style.opacity = '0.7';
+                            imgClone.style.zIndex = '1000';
+                            imgClone.style.transition = 'all 0.8s ease-in-out';
+                            
+                            document.body.appendChild(imgClone);
+                            
+                            // Start animation after a small delay
+                            setTimeout(() => {
+                                imgClone.style.top = cartIconRect.top + 'px';
+                                imgClone.style.left = cartIconRect.left + 'px';
+                                imgClone.style.width = '30px';
+                                imgClone.style.height = '30px';
+                                imgClone.style.opacity = '0.3';
+                                
+                                // Remove clone after animation
+                                setTimeout(() => {
+                                    document.body.removeChild(imgClone);
+                                    
+                                    // Reset button after 3 seconds
+                                    setTimeout(() => {
+                                        addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> Tambahkan ke Keranjang';
+                                    }, 3000);
+                                    
+                                }, 800);
+                            }, 100);
+                        }
+                    }, 800);
+                })
+                .catch(error => {
+                    console.error('Error adding to cart:', error);
+                    addToCartBtn.classList.remove('adding');
+                    addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> Tambahkan ke Keranjang';
+                    alert('Gagal menambahkan ke keranjang. Silakan coba lagi.');
+                });
+        });
+    }
+    
+    // Favorite button functionality
+    const favoriteBtn = document.querySelector('.btn-favorite');
+    if (favoriteBtn) {
+        favoriteBtn.addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            if (icon.classList.contains('far')) {
+                icon.classList.replace('far', 'fas');
+                icon.classList.add('text-danger');
+                this.style.backgroundColor = '#fff1f6';
+                
+                // Show small tooltip
+                const tooltip = document.createElement('div');
+                tooltip.style.position = 'absolute';
+                tooltip.style.backgroundColor = 'rgba(0,0,0,0.8)';
+                tooltip.style.color = 'white';
+                tooltip.style.padding = '5px 10px';
+                tooltip.style.borderRadius = '3px';
+                tooltip.style.fontSize = '12px';
+                tooltip.style.zIndex = '1000';
+                tooltip.style.top = (this.offsetTop - 30) + 'px';
+                tooltip.style.left = this.offsetLeft + 'px';
+                tooltip.textContent = 'Ditambahkan ke favorit';
+                tooltip.style.opacity = '0';
+                tooltip.style.transition = 'opacity 0.3s';
+                
+                this.parentNode.appendChild(tooltip);
+                setTimeout(() => {
+                    tooltip.style.opacity = '1';
+                    setTimeout(() => {
+                        tooltip.style.opacity = '0';
+                        setTimeout(() => {
+                            tooltip.remove();
+                        }, 300);
+                    }, 1500);
+                }, 10);
+            } else {
+                icon.classList.replace('fas', 'far');
+                icon.classList.remove('text-danger');
+                this.style.backgroundColor = '#f8f9fa';
+            }
+        });
+    }
+    
+    // Fetch related products
+    fetchRelatedProducts('{{ product.category }}', '{{ product.id }}');});
+
+// Function to fetch related products
+function fetchRelatedProducts(category, productId) {
+    fetch(`/api/products/category/${category}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Filter out current product and limit to 4 items
+            const relatedProducts = data.products
+                .filter(product => product.id !== productId)
+                .slice(0, 4);
+                
+            if (relatedProducts.length > 0) {
+                // Create related products section if there are products to show
+                createRelatedProductsSection(relatedProducts);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching related products:', error);
+            // Silently fail - no need to show error to user for related products
+        });
+}
+
+// Function to create related products section
+function createRelatedProductsSection(products) {
+    const container = document.createElement('section');
+    container.className = 'container related-products';
+    
+    // Create section title
+    const title = document.createElement('h3');
+    title.className = 'section-title';
+    title.textContent = 'Produk Terkait';
+    container.appendChild(title);
+    
+    // Create row for products
+    const row = document.createElement('div');
+    row.className = 'row';
+    
+    // Create product cards
+    products.forEach(product => {
+        const col = document.createElement('div');
+        col.className = 'col-md-3 col-sm-6 mb-4';
+        
+        const discountBadge = product.discountPercentage > 0 
+            ? `<div class="discount-badge">-${Math.round(product.discountPercentage)}% OFF</div>` 
+            : '';
+        
+        col.innerHTML = `
+            <div class="product-container h-100">
+                <div class="product-image-container" style="height: 200px;">
+                    <img src="${product.thumbnail}" class="product-image" alt="${product.title}">
+                    ${discountBadge}
+                </div>
+                <div class="p-3">
+                    <div class="category-badge mb-2">${product.category}</div>
+                    <h5 class="mb-2">${product.title}</h5>
+                    <div class="product-price mb-3">$${product.price}</div>
+                    <a href="/product/${product.id}" class="btn btn-sm btn-primary w-100">Lihat Detail</a>
+                </div>
+            </div>
+        `;
+        
+        row.appendChild(col);
+    });
+    
+    container.appendChild(row);
+    
+    // Add to page before footer
+    const footer = document.querySelector('.footer');
+    document.body.insertBefore(container, footer);
+}
+
+// Add product view count (stored in localStorage)
+document.addEventListener('DOMContentLoaded', function() {
+    const productId = '{{ product.id }}';
+    const viewedProducts = JSON.parse(localStorage.getItem('viewedProducts') || '{}');
+    
+    // Increment view count
+    viewedProducts[productId] = (viewedProducts[productId] || 0) + 1;
+    
+    // Save back to localStorage
+    localStorage.setItem('viewedProducts', JSON.stringify(viewedProducts));
+});
+
+// Enhance image zoom functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const mainImage = document.getElementById('mainImage');
+    const mainImageContainer = document.getElementById('mainImageContainer');
+    
+    if (mainImage && mainImageContainer) {
+        mainImageContainer.addEventListener('mousemove', function(e) {
+            // Get cursor position
+            const rect = mainImageContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Calculate percentage position
+            const xPercent = x / rect.width * 100;
+            const yPercent = y / rect.height * 100;
+            
+            // Apply zoom effect
+            mainImage.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+            mainImage.style.transform = 'scale(1.5)';
+        });
+        
+        mainImageContainer.addEventListener('mouseleave', function() {
+            mainImage.style.transform = 'scale(1)';
+        });
+    }
+});
